@@ -1,12 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Editor, EditorState, RichUtils, Modifier} from 'draft-js';
+import {Editor, EditorState, RichUtils, Modifier, DefaultDraftBlockRenderMap } from 'draft-js';
 import AppBar from 'material-ui/AppBar';
+import { Map } from 'immutable';
 import MyInput from './MyInput';
 import ColorControls from './fontColor';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 
+const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
+  center: {
+    wrapper: <div className="center-align" />
+  },
+  right: {
+    wrapper: <div className="right-align" />
+  }
+}));
 
 class MyEditor extends React.Component {
   constructor(props) {
@@ -26,18 +35,18 @@ class MyEditor extends React.Component {
     }
     return 'not-handled';
   }
-  _onBoldClick() {
-    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
-  }
-  _onItalicizeClick() {
-    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'ITALIC'));
-  }
-  _onUnderlineClick() {
-    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
-  }
-  _onStrikethroughClick() {
-    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'STRIKETHROUGH'));
-  }
+  // _onBoldClick() {
+  //   this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
+  // }
+  // _onItalicizeClick() {
+  //   this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'ITALIC'));
+  // }
+  // _onUnderlineClick() {
+  //   this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
+  // }
+  // _onStrikethroughClick() {
+  //   this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'STRIKETHROUGH'));
+  // }
 
   _toggleColor(toggledColor) {
     // console.log('hey');
@@ -74,10 +83,25 @@ class MyEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
-  formatButton({icon}) {
+  toggleFormat(e, style, block) {
+    e.preventDefault();
+    if (block) {
+      this.setState({
+        editorState: RichUtils.toggleBlockType(this.state.editorState, style)
+      });
+    } else {
+      this.setState({
+        editorState: RichUtils.toggleInlineStyle(this.state.editorState, style)
+      });
+    }
+  }
+
+  formatButton({icon, style, block}) {
     return(
       <RaisedButton
-        secondary={true}
+        backgroundColor={'lightgray'}
+        labelColor={'rgb(255,255,255)'}
+        onMouseDown={(e) => this.toggleFormat(e, style, block)}
         icon={<FontIcon className="material-icons">{icon}</FontIcon>}
       />
     );
@@ -88,18 +112,23 @@ class MyEditor extends React.Component {
       <div>
         <AppBar title="Toolbar" />
       <div className="toolbar">
-        {this.formatButton({icon: 'format_bold'})}
-        {this.formatButton({icon: 'format_italic'})}
-        {this.formatButton({icon: 'format_underlined'})}
-        {/* {this.formatButton({icon: 'format_underlined'})} */}
+        {this.formatButton({icon: 'format_bold', style: 'BOLD' })}
+        {this.formatButton({icon: 'format_italic', style: 'ITALIC' })}
+        {this.formatButton({icon: 'format_underlined', style: 'UNDERLINE' })}
+        {this.formatButton({icon: 'strikethrough_s', style: 'STRIKETHROUGH' })}
+        {this.formatButton({icon: 'format_list_bulleted', style: 'unordered-list-item', block: true })}
+        {this.formatButton({icon: 'format_list_numbered', style: 'ordered-list-item', block: true })}
+        {this.formatButton({icon: 'format_align_left', style: 'unstyled', block: true })}
+        {this.formatButton({icon: 'format_align_center', style: 'center', block: true })}
+        {this.formatButton({icon: 'format_align_right', style: 'right', block: true })}
       </div>
       <div
         // style={{backgroundColor: 'red'}}
         className='button'>
-        <button onClick={this._onBoldClick.bind(this)}>Bold</button>
+        {/* <button onClick={this._onBoldClick.bind(this)}>Bold</button>
         <button onClick={this._onItalicizeClick.bind(this)}>Italicize</button>
         <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
-        <button onClick={this._onStrikethroughClick.bind(this)}>Strikethrough</button>
+        <button onClick={this._onStrikethroughClick.bind(this)}>Strikethrough</button> */}
         <ColorControls
           editorState={this.state.editorState}
           onToggle={this.toggleColor}
@@ -108,6 +137,7 @@ class MyEditor extends React.Component {
       <div onClick={this.focus}>
         <Editor
           customStyleMap={Object.assign({}, styleMap, colorStyleMap)}
+          blockRenderMap={myBlockTypes}
           editorState={this.state.editorState}
           handleKeyCommand={this.handleKeyCommand}
           onChange={this.onChange}

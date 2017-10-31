@@ -17,3 +17,11 @@
 .toolbar > * {
   margin-right: 5px;
 }
+
+.right-align {
+  text-align: right;
+}
+
+.center-align {
+  text-align: center;
+}
