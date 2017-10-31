@@ -3,16 +3,22 @@ import ReactDOM from 'react-dom';
 import {Editor, EditorState, RichUtils, Modifier} from 'draft-js';
 import AppBar from 'material-ui/AppBar';
 import MyInput from './MyInput';
-import ColorControls from './fontColor';
+// import ColorControls from './fontColor';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
+import Popover from 'material-ui/Popover';
+import { CirclePicker } from 'react-color';
 
 
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.focus = () => this.editor.focus();
-    this.state = {editorState: EditorState.createEmpty()};
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      currentFontSize: 12,
+      inlineStyles: {}
+    };
     this.onChange = (editorState) => this.setState({editorState});
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
@@ -74,11 +80,103 @@ class MyEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
-  formatButton({icon}) {
+  toggleInlineFormat(e, style) {
+    e.preventDefault();
+    this.setState({
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, style)
+    });
+  }
+  formatButton({icon, style}) {
     return(
       <RaisedButton
-        secondary={true}
+        // secondary={true}
+        backgroundColor={'lightgray'}
+        labelColor={'rgb(255,255,255)'}
+        onMouseDown={(e) => this.toggleInlineFormat(e, style)}
         icon={<FontIcon className="material-icons">{icon}</FontIcon>}
+      />
+    );
+  }
+
+  formatColor(color) {
+    var newInlineStyles = Object.assign(
+      {},
+    this.state.inlineStyles,
+      {
+        [color.hex]: {
+          color: color.hex
+        }
+      }
+    );
+    this.setState({
+      inlineStyles: newInlineStyles,
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, color.hex)
+    });
+  }
+
+
+  openColorPicker(e) {
+    this.setState({
+      colorPickerOpen: true,
+      colorPickerButton: e.target
+    });
+  }
+
+  closeColorPicker() {
+    this.setState({
+      colorPickerOpen: false
+    });
+  }
+
+
+  colorPicker() {
+    return(
+      <div style = {{display: 'inline-block'}}>
+        <RaisedButton
+          backgroundColor={'lightgray'}
+          labelColor={'rgb(255,255,255)'}
+          icon={<FontIcon className="material-icons">format_paint</FontIcon>}
+          onClick={this.openColorPicker.bind(this)}
+        />
+        <Popover
+          open={this.state.colorPickerOpen}
+          anchorEl={this.state.colorPickerButton}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          onRequestClose={this.closeColorPicker.bind(this)}
+          >
+          <CirclePicker onChangeComplete={this.formatColor.bind(this)}/>
+        </Popover>
+      </div>
+    );
+  }
+
+  applyIncreaseFontSize(shrink) {
+    var newFontSize = this.state.currentFontSize + (shrink ? -4 : 4);
+    var newInlineStyles = Object.assign(
+      {},
+      this.state.inlineStyles,
+      {
+        [newFontSize]: {
+          fontSize: `${newFontSize}px`
+        }
+      }
+    );
+
+    this.setState({
+      inlineStyles: newInlineStyles,
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, String(newFontSize)),
+      currentFontSize: newFontSize
+    });
+  }
+
+  increaseFontSize(shrink) {
+    return (
+      <RaisedButton
+        backgroundColor={'lightgray'}
+        labelColor={'rgb(255,255,255)'}
+        onMouseDown={() => this.applyIncreaseFontSize(shrink)}
+        icon={<FontIcon className="material-icons">{shrink ? 'zoom_out' : 'zoom_in'}</FontIcon>}
       />
     );
   }
@@ -88,26 +186,30 @@ class MyEditor extends React.Component {
       <div>
         <AppBar title="Toolbar" />
       <div className="toolbar">
-        {this.formatButton({icon: 'format_bold'})}
-        {this.formatButton({icon: 'format_italic'})}
-        {this.formatButton({icon: 'format_underlined'})}
+        {this.formatButton({icon: 'format_bold', style: 'BOLD' })}
+        {this.formatButton({icon: 'format_italic', style: 'ITALIC' })}
+        {this.formatButton({icon: 'format_underlined', style: 'UNDERLINE' })}
+        {this.colorPicker()}
+        {this.increaseFontSize(false)}
+        {this.increaseFontSize(true)}
         {/* {this.formatButton({icon: 'format_underlined'})} */}
       </div>
       <div
         // style={{backgroundColor: 'red'}}
         className='button'>
-        <button onClick={this._onBoldClick.bind(this)}>Bold</button>
+        {/* <button onClick={this._onBoldClick.bind(this)}>Bold</button>
         <button onClick={this._onItalicizeClick.bind(this)}>Italicize</button>
         <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
-        <button onClick={this._onStrikethroughClick.bind(this)}>Strikethrough</button>
-        <ColorControls
+        <button onClick={this._onStrikethroughClick.bind(this)}>Strikethrough</button> */}
+        {/* <ColorControls
           editorState={this.state.editorState}
           onToggle={this.toggleColor}
-        />
+        /> */}
       </div>
       <div onClick={this.focus}>
         <Editor
-          customStyleMap={Object.assign({}, styleMap, colorStyleMap)}
+          // customStyleMap={Object.assign({}, styleMap, colorStyleMap)}
+          customStyleMap={this.state.inlineStyles}
           editorState={this.state.editorState}
           handleKeyCommand={this.handleKeyCommand}
           onChange={this.onChange}
@@ -119,11 +221,11 @@ class MyEditor extends React.Component {
   }
 }
 
-const styleMap = {
-  'STRIKETHROUGH': {
-    textDecoration: 'line-through',
-  },
-};
+// const styleMap = {
+//   'STRIKETHROUGH': {
+//     textDecoration: 'line-through',
+//   },
+// };
 
 const colorStyleMap = {
   red: {
