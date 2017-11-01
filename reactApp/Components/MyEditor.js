@@ -8,6 +8,7 @@ import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import { CirclePicker } from 'react-color';
+import { Link } from 'react-router-dom';
 
 const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
   center: {
@@ -150,7 +151,7 @@ class MyEditor extends React.Component {
   render() {
     return (
       <div>
-        <AppBar title="Toolbar" />
+        <AppBar title='editMe' />
       <div className="toolbar">
         {this.formatButton({icon: 'format_bold', style: 'BOLD' })}
         {this.formatButton({icon: 'format_italic', style: 'ITALIC' })}
@@ -163,6 +164,7 @@ class MyEditor extends React.Component {
         {this.colorPicker()}
         {this.increaseFontSize(false)}
         {this.increaseFontSize(true)}
+        {this.formatButton({icon: 'save', style: 'SAVE', block: true })}
       </div>
       <div className="editor" onClick={this.focus}>
         <Editor
@@ -174,6 +176,8 @@ class MyEditor extends React.Component {
           ref={(ref) => this.editor = ref}
         />
       </div>
+      <br/>
+      <Link to='/MyPortal'>Back to MyPortal</Link>
       </div>
     );
   }

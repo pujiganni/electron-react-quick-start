@@ -7,6 +7,7 @@ const LocalStrategy = require('passport-local');
 const mongoose = require('mongoose');
 
 const User = require('./Models/User');
+const Document = require('./Models/Document');
 
 mongoose.connect(process.env.MONGODB_URI);
 
@@ -54,7 +55,7 @@ app.post('/MyLogin', passport.authenticate('local'), function(req, res) {
 
 
 app.post('/MyRegister', (req, res) => {
-  console.log(req.body, 'body');
+  // console.log(req.body, 'body');
   const newUser = new User({
     email: req.body.email,
     password: req.body.password,
@@ -63,6 +64,22 @@ app.post('/MyRegister', (req, res) => {
     username: req.body.username,
   });
   newUser.save((err, result) => {
+    if(err) {
+      res.json({success: false, err: err});
+    } else {
+      res.json({success: true});
+    }
+  });
+});
+
+app.post('/MyPortal', (req, res) => {
+  console.log(req.body, 'body');
+  const newDocument = new Document({
+    title: req.body.title,
+    docId: req.body.docId,
+    password: req.body.password,
+  });
+  newDocument.save((err, result) => {
     if(err) {
       res.json({success: false, err: err});
     } else {
