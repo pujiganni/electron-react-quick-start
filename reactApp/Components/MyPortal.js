@@ -17,7 +17,16 @@ class MyPortal extends React.Component {
       open: false,
       password: '',
       docId: '',
+      docs: [],
     };
+  }
+
+  componentDidMount() {
+    axios.get("http://localhost:3000/getAllDocuments")
+     .then(documents => {
+       this.setState({ docs: documents.data });
+     })
+     .catch(err => console.log(err));
   }
 
   handleClick(event) {
@@ -92,6 +101,7 @@ class MyPortal extends React.Component {
               <TextField hintText="Password"
               onChange = {(event,newValue) => this.setState({password:newValue})} />
             </Dialog>
+
             <br/>
             {/* <TextField
               type="password"
@@ -101,20 +111,30 @@ class MyPortal extends React.Component {
             /> */}
             <br/>
             <RaisedButton label="Shared Document" primary={true} style={style}
-              // onClick={this.handleOpen.bind(this)}
             />
-            {/* <Dialog
-              title="Shared Document"
-              actions={actions}
-              modal={true}
-              open={this.state.open}
+            <br/>
+            <div className="mydocs">
+              <FlatButton label="My Documents" primary={true} style={style} onClick={this.handleOpen.bind(this)} />
+              <Dialog
+                title="My Documents"
+                actions={actions}
+                modal={false}
+                open={this.state.open}
+                onRequestClose={this.handleClose}
+                autoScrollBodyContent={true}
               >
-              <TextField hintText="Document ID" />
-            </Dialog> */}
+                <ul>
+                  {this.state.docs.map(doc => (
+                    <div>
+                      <Link to='/MyEditor'>{doc.title}</Link>
+                    </div>))}
+                  </ul>
+              </Dialog>
+            </div>
       </div>
-
         </MuiThemeProvider>
-        <Link to='/MyEditor'>To myEditor</Link>
+        
+          <Link className="editbutt" to='/MyEditor'>To myEditor</Link>
       </div>
       </HashRouter>
     );

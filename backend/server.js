@@ -88,5 +88,15 @@ app.post('/MyPortal', (req, res) => {
   });
 });
 
+app.get('/getAllDocuments', (req, res) => {
+  Document.find({}, (err, documents) => {
+    if (err) {
+      res.send("error");
+    } else {
+      res.json(documents);
+    }
+  });
+});
+
 
 app.listen(3000);

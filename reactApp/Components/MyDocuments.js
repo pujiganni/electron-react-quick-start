@@ -1,27 +1,24 @@
 // import React from 'react';
-// const io = require('socket.io-client');
+// // import MobileTearSheet from '../../../MobileTearSheet';
+// import {List, ListItem} from 'material-ui/List';
+// // import Comment from 'material-ui/svg-icons/comment';
+// import ActionGrade from 'material-ui/svg-icons/action/grade';
+// import ContentSend from 'material-ui/svg-icons/content/send';
+// import ContentDrafts from 'material-ui/svg-icons/content/drafts';
+// import Divider from 'material-ui/Divider';
+// import ActionInfo from 'material-ui/svg-icons/action/info';
 //
-// // class component
-// class MyDocuments extends React.Component {
-//   constructor(props) {
-//     super(props);
+// const MyDocuments = () => (
+//   <div>
+//     <List>
+//       {/* <ListItem primaryText="My First Doc" leftIcon={<Comment />} /> */}
+//       <ListItem primaryText="My Second Doc" leftIcon={<ActionGrade />} />
+//     </List>
+//     <Divider />
+//     <List>
+//       <ListItem primaryText="All mail" rightIcon={<ActionInfo />} />
+//     </List>
+//   </div>
+// );
 //
-//     this.state = {
-//       document: [],
-//     };
-//   }
-//
-//   // componentDidMount() {
-//   //
-//   // }
-//
-//   render() {
-//     let input;
-//     return (
-//       <div>
-//         React is working
-//
-//       </div>
-//     );
-//   }
-// };
+// export default MyDocuments;

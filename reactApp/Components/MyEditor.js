@@ -177,7 +177,7 @@ class MyEditor extends React.Component {
         />
       </div>
       <br/>
-      <Link to='/MyPortal'>Back to MyPortal</Link>
+      <Link className="portalbutt" to='/MyPortal'>Back to MyPortal</Link>
       </div>
     );
   }
