@@ -13,6 +13,9 @@ const Document = mongoose.model('Document', {
     type: String,
     required: true
   },
+  content: {
+    type: String
+  }
 });
 
 module.exports = Document;

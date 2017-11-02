@@ -3,7 +3,7 @@
   border: 1px solid black;
   cursor: text;
   padding: 10px;
-  margin-top: 20px;
+  margin: 11px;
   border-radius: 2px;
   margin-bottom: 2em;
   box-shadow: inset 0px 1px 8px -3px #ABABAB;
@@ -26,6 +26,18 @@
 
 .center-align {
   text-align: center;
+}
+
+.editbutt {
+   color: #05bbd4;
+   font-family: RobotoDraft, Roboto, sans-serif;
+   margin: 20px;
+}
+
+.portalbutt {
+  color: #05bbd4;
+  font-family: RobotoDraft, Roboto, sans-serif;
+  margin: 11px;
 }
 
 /*.editbutt {

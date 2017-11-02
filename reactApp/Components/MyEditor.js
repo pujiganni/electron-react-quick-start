@@ -176,7 +176,6 @@ class MyEditor extends React.Component {
           ref={(ref) => this.editor = ref}
         />
       </div>
-      <br/>
       <Link className="portalbutt" to='/MyPortal'>Back to MyPortal</Link>
       </div>
     );

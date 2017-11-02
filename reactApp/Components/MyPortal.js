@@ -8,6 +8,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import axios from 'axios';
 
+
 class MyPortal extends React.Component {
   constructor(props){
     super(props);
@@ -15,6 +16,8 @@ class MyPortal extends React.Component {
       title:'',
       sharedDoc:'',
       open: false,
+      open2: false,
+      open3: false,
       password: '',
       docId: '',
       docs: [],
@@ -56,6 +59,22 @@ class MyPortal extends React.Component {
     this.setState({open: false});
   }
 
+  handleOpen2() {
+    this.setState({open2: true});
+  }
+
+  handleClose2() {
+    this.setState({open2: false});
+  }
+
+  handleOpen3() {
+    this.setState({open3: true});
+  }
+
+  handleClose3() {
+    this.setState({open3: false});
+  }
+
 
   render() {
     const actions = [
@@ -69,6 +88,28 @@ class MyPortal extends React.Component {
         primary={true}
         disabled={false}
         onClick={this.handleClick.bind(this)}
+      />,
+    ];
+
+    const actions2 = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleClose2.bind(this)}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        disabled={true}
+        onClick={this.handleClose}
+      />,
+    ];
+
+    const actions3 = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleClose3.bind(this)}
       />,
     ];
 
@@ -102,25 +143,29 @@ class MyPortal extends React.Component {
               onChange = {(event,newValue) => this.setState({password:newValue})} />
             </Dialog>
 
+
             <br/>
-            {/* <TextField
-              type="password"
-              hintText="Enter Shared Document ID"
-              floatingLabelText="Document ID"
-              onChange = {(event,newValue) => this.setState({sharedDoc:newValue})}
-            /> */}
-            <br/>
-            <RaisedButton label="Shared Document" primary={true} style={style}
+            <RaisedButton label="Shared Document" primary={true} style={style} onClick={this.handleOpen2.bind(this)}
             />
+            <Dialog
+              title="Enter Shared Document ID"
+              actions={actions2}
+              modal={true}
+              open={this.state.open2}
+              >
+              <TextField hintText="Document ID"
+              // onChange = {(event,newValue) => this.setState({docId:newValue})}
+            />
+            </Dialog>
             <br/>
             <div className="mydocs">
-              <FlatButton label="My Documents" primary={true} style={style} onClick={this.handleOpen.bind(this)} />
+              <RaisedButton label="My Documents" primary={true} style={style} onClick={this.handleOpen3.bind(this)} />
               <Dialog
                 title="My Documents"
-                actions={actions}
+                actions={actions3}
                 modal={false}
-                open={this.state.open}
-                onRequestClose={this.handleClose}
+                open={this.state.open3}
+                onRequestClose={this.handleClose3.bind(this)}
                 autoScrollBodyContent={true}
               >
                 <ul>
@@ -133,7 +178,7 @@ class MyPortal extends React.Component {
             </div>
       </div>
         </MuiThemeProvider>
-        
+          <br/>
           <Link className="editbutt" to='/MyEditor'>To myEditor</Link>
       </div>
       </HashRouter>
