@@ -13,6 +13,17 @@ const Document = mongoose.model('Document', {
     type: String,
     required: true
   },
+  content: {
+    type: String,
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  styles: {
+    type: Object
+  }
 });
 
 module.exports = Document;

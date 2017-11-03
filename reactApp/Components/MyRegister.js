@@ -8,6 +8,12 @@ import { HashRouter, Link } from 'react-router-dom';
 import axios from 'axios';
 // import axios from 'axios';
 
+const styles = {
+  underlineStyle: {
+    borderColor: '#4D90FE'
+  }
+};
+
 class MyRegister extends Component {
   constructor(props){
     super(props);
@@ -50,17 +56,22 @@ class MyRegister extends Component {
             <div>
               <AppBar
                 title="Register"
+                style={{backgroundColor:'#2196f3'}}
               />
             </div>
            <TextField
              hintText="Enter your First Name"
              floatingLabelText="First Name"
+             floatingLabelFocusStyle={{color: '#4D90FE'}}
+             underlineFocusStyle={styles.underlineStyle}
              onChange = {(event,newValue) => this.setState({firstname:newValue})}
              />
            <br/>
            <TextField
              hintText="Enter your Last Name"
              floatingLabelText="Last Name"
+             floatingLabelFocusStyle={{color: '#4D90FE'}}
+             underlineFocusStyle={styles.underlineStyle}
              onChange = {(event,newValue) => this.setState({lastname:newValue})}
              />
            <br/>
@@ -68,6 +79,8 @@ class MyRegister extends Component {
              hintText="Enter your Email"
              type="email"
              floatingLabelText="Email"
+             floatingLabelFocusStyle={{color: '#4D90FE'}}
+             underlineFocusStyle={styles.underlineStyle}
              onChange = {(event,newValue) => this.setState({email:newValue})}
              />
            <br/>
@@ -75,6 +88,8 @@ class MyRegister extends Component {
              type = "username"
              hintText="Enter your Username"
              floatingLabelText="Username"
+             floatingLabelFocusStyle={{color: '#4D90FE'}}
+             underlineFocusStyle={styles.underlineStyle}
              onChange = {(event,newValue) => this.setState({username:newValue})}
              />
              <br/>
@@ -82,12 +97,14 @@ class MyRegister extends Component {
              type = "password"
              hintText="Enter your Password"
              floatingLabelText="Password"
+             floatingLabelFocusStyle={{color: '#4D90FE'}}
+             underlineFocusStyle={styles.underlineStyle}
              onChange = {(event,newValue) => this.setState({password:newValue})}
              />
            <br/>
            <RaisedButton label="Submit" backgroundColor={'rgb(67,133,244)'} labelColor={'rgb(255,255,255)'} style={style} onClick={(event) => this.handleClick(event)}/>
            <br />
-           <Link to='/MyLogin'>Already Registered? Login here</Link>
+           <Link className="LoginButt" to='/MyLogin'>Already Registered? Login here</Link>
           </div>
          </MuiThemeProvider>
       </div>

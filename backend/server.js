@@ -29,14 +29,15 @@ passport.deserializeUser(function(id, done) {
 passport.use(new LocalStrategy(function(username, password, done) {
   User.findOne({ username: username }, function (err, user) {
     if (err) {
-      console.log(err);
+      console.log('error finding user passport local', err);
       return done(err);
     }
     if (!user) {
-      console.log(user);
+      console.log('incorrect usernae', user);
       return done(null, false, { message: 'Incorrect username.' });
     }
     if (user.password !== password) {
+      console.log('incorrect password');
       return done(null, false, { message: 'Incorrect password.' });
     }
     return done(null, user);
@@ -72,15 +73,64 @@ app.post('/MyRegister', (req, res) => {
   });
 });
 
-app.post('/MyPortal', (req, res) => {
+// app.post('/MyPortal', (req, res) => {
+//   console.log(req.body, 'body');
+//   const newDocument = new Document({
+//     title: req.body.title,
+//     docId: req.body.docId,
+//     password: req.body.password,
+//   });
+//   newDocument.save((err, result) => {
+//     if(err) {
+//       res.json({success: false, err: err});
+//     } else {
+//       res.json({success: true});
+//     }
+//   });
+// });
+
+app.post('/newDocument', (req, res) => {
   console.log(req.body, 'body');
   const newDocument = new Document({
     title: req.body.title,
-    docId: req.body.docId,
+    owner: req.user._id,
     password: req.body.password,
+    docId: req.body.docId,
+    content: '',
   });
-  newDocument.save((err, result) => {
+  newDocument.save((err, newDoc) => {
     if(err) {
+      res.json({success: false, err: err});
+    } else {
+      res.json({success: true, doc: newDoc});
+    }
+  });
+});
+
+app.get('/getAllDocuments', (req, res) => {
+  console.log('req.user', req.user);
+  Document.find({ owner: req.user._id}, (err, documents) => {
+    if(err) {
+      res.json({success: false, err: err});
+    } else {
+      res.json({success: true, docs: documents});
+    }
+  });
+});
+
+app.get('/getAllDocuments/:docId', (req, res) => {
+  Document.findById(req.params.docId, (err, doc) => {
+    if (err) {
+      res.json({success: false, err: err});
+    } else {
+      res.json({success: true, doc: doc});
+    }
+  });
+});
+
+app.post('/updateDoc/:docId', (req, res) => {
+  Document.update({ _id: req.params.docId }, { $set: { content: req.body.content, styles: req.body.styles }}, (err, documents) => {
+    if (err) {
       res.json({success: false, err: err});
     } else {
       res.json({success: true});
@@ -88,15 +138,6 @@ app.post('/MyPortal', (req, res) => {
   });
 });
 
-app.get('/getAllDocuments', (req, res) => {
-  Document.find({}, (err, documents) => {
-    if (err) {
-      res.send("error");
-    } else {
-      res.json(documents);
-    }
-  });
-});
 
 
 app.listen(3000);

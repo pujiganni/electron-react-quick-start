@@ -6,6 +6,12 @@ import TextField from 'material-ui/TextField';
 import { HashRouter, Link } from 'react-router-dom';
 import axios from 'axios';
 
+const styles = {
+  underlineStyle: {
+    borderColor: '#4D90FE'
+  }
+};
+
 class MyLogin extends React.Component {
   constructor(props){
     super(props);
@@ -41,10 +47,13 @@ class MyLogin extends React.Component {
           <div>
             <AppBar
               title="Login"
+              style={{backgroundColor:'#2196f3'}}
             />
             <TextField
               hintText="Enter your Username"
               floatingLabelText="Username"
+              floatingLabelFocusStyle={{color: '#4D90FE'}}
+              underlineFocusStyle={styles.underlineStyle}
               onChange = {(event,newValue) => this.setState({username:newValue})}
             />
             <br/>
@@ -52,12 +61,14 @@ class MyLogin extends React.Component {
               type="password"
               hintText="Enter your Password"
               floatingLabelText="Password"
+              floatingLabelFocusStyle={{color: '#4D90FE'}}
+              underlineFocusStyle={styles.underlineStyle}
               onChange = {(event,newValue) => this.setState({password:newValue})}
             />
             <br/>
             <RaisedButton label="Submit" backgroundColor={'rgb(67,133,244)'} labelColor={'rgb(255,255,255)'} style={style} onClick={(event) => this.handleClick(event)}/>
             <br/>
-            <Link to='/'>Not Registered? Sign up here</Link>
+            <Link className="registerbutt" to='/'>Not Registered? Sign up here</Link>
           </div>
         </MuiThemeProvider>
       </div>
