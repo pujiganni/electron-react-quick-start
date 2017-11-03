@@ -10,6 +10,7 @@ import Popover from 'material-ui/Popover';
 import { CirclePicker } from 'react-color';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import io from 'socket.io-client';
 
 
 const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
@@ -17,6 +18,9 @@ const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
     element: 'div'
   },
   right: {
+    element: 'div'
+  },
+  ordered: {
     element: 'div'
   }
 }));
@@ -30,7 +34,12 @@ class MyEditor extends React.Component {
       currentFontSize: 12,
       inlineStyles: {}
     };
-    this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = (editorState) => {
+      const contentState = editorState.getCurrentContent();
+      const stringContent = JSON.stringify(convertToRaw(contentState));
+      this.socket.emit('change', stringContent);
+      this.setState({editorState});
+    };
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
   }
@@ -151,6 +160,19 @@ class MyEditor extends React.Component {
   }
 
   componentDidMount() {
+    this.socket = io('http://localhost:3000/');
+    this.socket.on('connect', () => {
+      console.log('connected');
+    });
+    this.socket.on('globalChange', (data) => {
+      const rawContentState = JSON.parse(data);
+      const contentState = convertFromRaw(rawContentState);
+      const newEditorState = EditorState.createWithContent(contentState);
+      this.setState({
+        editorState: newEditorState
+      });
+    });
+    
     axios.get(`http://localhost:3000/getAllDocuments/${this.props.match.params.docId}`)
      .then((resp) => {
        console.log(resp.data.doc);
@@ -196,6 +218,8 @@ class MyEditor extends React.Component {
       return 'center-align';
     } else if (type === 'right') {
       return 'right-align';
+    } else if (type === 'ordered') {
+      return 'format-ordered';
     } else {
       return '';
     }

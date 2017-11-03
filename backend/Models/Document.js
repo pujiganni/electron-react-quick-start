@@ -23,7 +23,11 @@ const Document = mongoose.model('Document', {
   },
   styles: {
     type: Object
+  },
+  sharedWith: {
+    type: Array,
   }
+
 });
 
 module.exports = Document;

@@ -12,6 +12,8 @@ import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
 import {blue500} from 'material-ui/styles/colors';
+// import io from 'socket.io-client';
+
 
 const styles = {
   underlineStyle: {
@@ -56,6 +58,23 @@ class MyPortal extends React.Component {
      .catch((err) => console.log('error getting all docs', err));
   }
 
+
+  saveById(){
+    axios.post('http://localhost:3000/saveById', {docId: this.state.docId})
+     .then((resp) => {
+       if (resp.data.success) {
+         console.log("success!");
+         this.setState({
+           docs: [...this.state.Documents, resp.data.document],
+           docId: ''
+         });
+       } else {
+         console.log(resp.data.error);
+       }
+     })
+     .catch((err) => console.log(err));
+  }
+
   handleClick(event) {
     event.preventDefault();
     axios.post("http://localhost:3000/newDocument", {
@@ -74,6 +93,21 @@ class MyPortal extends React.Component {
       }
     })
     .catch((err) => console.log(err));
+  }
+
+  handleClick2(event) {
+    event.preventDefault();
+    console.log('state docid', this.state.sharedDocId);
+    axios.get(`http://localhost:3000/getAllDocuments/${this.state.sharedDocId}`)
+    .then((resp) => {
+      if(resp.data.success) {
+        console.log('THIS LOG', resp.data);
+        this.props.history.push(`/edit/${resp.data.doc._id}`);
+      } else {
+        console.log('hi', resp.data);
+      }
+    })
+    .catch((err) => console.log('error', err));
   }
 
   handleOpen() {
@@ -116,8 +150,8 @@ class MyPortal extends React.Component {
       <FlatButton
         label="Submit"
         default={true}
-        disabled={true}
-        onClick={this.handleClose}
+        disabled={false}
+        onClick={this.handleClick2.bind(this)}
       />,
     ];
 
@@ -157,7 +191,7 @@ class MyPortal extends React.Component {
               open={this.state.open2}
               >
               <TextField hintText="Document ID" underlineFocusStyle={styles.underlineStyle}
-              // onChange = {(event,newValue) => this.setState({docId:newValue})}
+              onChange = {(event,newValue) => this.setState({sharedDocId:newValue})}
             />
             </Dialog>
             <br/>

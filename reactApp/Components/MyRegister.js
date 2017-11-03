@@ -8,6 +8,9 @@ import { HashRouter, Link } from 'react-router-dom';
 import axios from 'axios';
 // import axios from 'axios';
 
+
+//react player for video on login screen
+
 const styles = {
   underlineStyle: {
     borderColor: '#4D90FE'

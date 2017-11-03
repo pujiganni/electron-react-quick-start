@@ -28,6 +28,10 @@
   text-align: center;
 }
 
+.format-ordered {
+  list-style-type:disc;
+}
+
 .editbutt {
    color: #4D90FE;
    font-family: RobotoDraft, Roboto, sans-serif;

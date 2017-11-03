@@ -5,15 +5,20 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const mongoose = require('mongoose');
-
-const User = require('./Models/User');
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 const Document = require('./Models/Document');
+const User = require('./Models/User');
+const MongoStore = require('connect-mongo')(session);
 
 mongoose.connect(process.env.MONGODB_URI);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
-app.use(session({ secret: 'secret sauce' }));
+app.use(session({
+  secret: 'secret sauce',
+  store: new MongoStore({mongooseConnection: mongoose.connection})
+}));
 
 passport.serializeUser(function(user, done) {
   done(null, user._id);
@@ -73,22 +78,6 @@ app.post('/MyRegister', (req, res) => {
   });
 });
 
-// app.post('/MyPortal', (req, res) => {
-//   console.log(req.body, 'body');
-//   const newDocument = new Document({
-//     title: req.body.title,
-//     docId: req.body.docId,
-//     password: req.body.password,
-//   });
-//   newDocument.save((err, result) => {
-//     if(err) {
-//       res.json({success: false, err: err});
-//     } else {
-//       res.json({success: true});
-//     }
-//   });
-// });
-
 app.post('/newDocument', (req, res) => {
   console.log(req.body, 'body');
   const newDocument = new Document({
@@ -106,7 +95,6 @@ app.post('/newDocument', (req, res) => {
     }
   });
 });
-
 app.get('/getAllDocuments', (req, res) => {
   console.log('req.user', req.user);
   Document.find({ owner: req.user._id}, (err, documents) => {
@@ -119,6 +107,7 @@ app.get('/getAllDocuments', (req, res) => {
 });
 
 app.get('/getAllDocuments/:docId', (req, res) => {
+  console.log('req params', req.params.docId);
   Document.findById(req.params.docId, (err, doc) => {
     if (err) {
       res.json({success: false, err: err});
@@ -127,6 +116,9 @@ app.get('/getAllDocuments/:docId', (req, res) => {
     }
   });
 });
+
+
+
 
 app.post('/updateDoc/:docId', (req, res) => {
   Document.update({ _id: req.params.docId }, { $set: { content: req.body.content, styles: req.body.styles }}, (err, documents) => {
@@ -138,6 +130,24 @@ app.post('/updateDoc/:docId', (req, res) => {
   });
 });
 
+app.post('/saveById', (req, res) => {
+  Document.findByIdAndUpdate({_id: req.body.docId}, { $push: { sharedWith: req.user._id}}, (err,result) => {
+    if(err) {
+      console.log(err);
+      res.json({success: false, err: err});
+    } else {
+      res.json({success: true, document: result});
+    }
+  });
+});
+
+io.on('connection', function(socket) {
+  console.log('user connected');
+  socket.on('change', (data) => {
+    socket.broadcast.emit('globalChange', data);
+  });
+});
 
 
-app.listen(3000);
+
+server.listen(3000);
