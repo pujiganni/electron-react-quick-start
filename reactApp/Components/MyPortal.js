@@ -3,7 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import { HashRouter, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import axios from 'axios';
@@ -18,7 +18,6 @@ const styles = {
     borderColor: '#4D90FE'
   }
 };
-
 
 class MyPortal extends React.Component {
   constructor(props){
@@ -93,15 +92,6 @@ class MyPortal extends React.Component {
     this.setState({open2: false});
   }
 
-  // handleOpen3() {
-  //   this.setState({open3: true});
-  // }
-  //
-  // handleClose3() {
-  //   this.setState({open3: false});
-  // }
-
-
   render() {
     const actions = [
       <FlatButton
@@ -131,14 +121,6 @@ class MyPortal extends React.Component {
       />,
     ];
 
-    // const actions3 = [
-    //   <FlatButton
-    //     label="Cancel"
-    //     primary={true}
-    //     onClick={this.handleClose3.bind(this)}
-    //   />,
-    // ];
-
     return (
       <div>
         <MuiThemeProvider>
@@ -166,9 +148,6 @@ class MyPortal extends React.Component {
               onChange = {(event,newValue) => this.setState({password:newValue})} underlineFocusStyle={styles.underlineStyle}
               />
             </Dialog>
-
-
-
             <RaisedButton label="Enter Document ID" backgroundColor={'#4D90FE'} labelColor={'rgb(255,255,255)'} style={style} onClick={this.handleOpen2.bind(this)}
             />
             <Dialog
@@ -185,21 +164,6 @@ class MyPortal extends React.Component {
             <div className="mydocs">
               <FlatButton label="My Documents" labelColor={'#4D90FE'} backgroundColor={'rgb(255,255,255)'} fullWidth={true} style={style}
               />
-              {/* <Dialog
-                title="My Documents"
-                actions={actions3}
-                modal={false}
-                open={this.state.open3}
-                onRequestClose={this.handleClose3.bind(this)}
-                autoScrollBodyContent={true}
-              >
-                <ul>
-                  {this.state.docs.map(doc => (
-                    <div key={document._id}>
-                      <Link to={`/edit/${document._id}`}>{document.title}</Link>
-                    </div>))}
-                  </ul>
-              </Dialog> */}
             </div>
             <Divider />
                <List>
